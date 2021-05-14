@@ -34,7 +34,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
+                <a class="nav-link btn" href="/checkout">Checkout</a>
             </li>
             </ul>
         </div>
@@ -66,12 +66,8 @@
 	    			<div class="card">
 	    				<img height=200px src="{{ item.image }}" class="card-img-top">
 	    				<div class="card-body">
-	    					<div class="card-title" id='nm{{item.id}}'>
-                            {{item.name}}
-	    					</div>
-	    					<div class="card-text">
-	    						${{item.current_price}}
-	    					</div>
+	    					<div class="card-title" id='nm{{item.id}}'>{{item.name}}</div>
+	    					<div class="card-text" id="price{{item.id}}">{{item.current_price}}</div>
                             <a class='btn btn-primary' href="{% url 'details' item.id %}">view</a>
                             <button id="{{item.id}}" class='btn jsclass btn-warning'>add to cart</button>
 	    				</div>
@@ -116,12 +112,15 @@
         console.log('this event is clicked');
         var item_id = this.id.toString();
         console.log(item_id)
-        console.log(typeof(item_id))
 
         if(cart[item_id]!=undefined){
-            cart[item_id] += 1
+            quentity = cart[item_id][0] + 1;
+            cart[item_id][0] = quentity;
         }else{
-            cart[item_id] = 1
+            quentity = 1;
+            name = document.getElementById('nm'+item_id).innerHTML;
+            price = parseFloat(document.getElementById('price'+item_id).innerHTML);
+            cart[item_id] = [name,quentity,price]; 
         }
         console.log(cart);
         localStorage.setItem('cart', JSON.stringify(cart))
@@ -132,9 +131,23 @@
 
 
     {% comment %} popover {% endcomment %}
-    $(function () {
-        $('[data-toggle="popover"]').popover();
-        $("#cart_id").attr("data-content", "<p>your new popover content</p>")
-    })
+    
+        {% comment %} DisplayCart(cart)
+
+        function DisplayCart(cart){
+            var cartString = "";
+            cartString += "<p>your new popover content</p>";
+            var cartIndex = 1;
+
+            for(var x in cart){
+                cartString += cartIndex;
+                cartString += document.getElementById("nm"+x).innerHTML+ "qty:" +cart[x];
+                cartIndex += 1;
+            } 
+            cartString += "<a href='/checkout'><button class='btn btn-warning' id='checkout'>checkout</button></a>"
+            document.getElementById("cart_id").setAttribute('data-content',cartString )
+            $('[data-toggle="popover"]').popover();
+        } {% endcomment %}
+    
 </script>
 </html>
