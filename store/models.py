@@ -10,6 +10,7 @@ class Product(models.Model):
     current_price = models.FloatField()
     real_price = models.FloatField()
     image = models.CharField(max_length=500)
+    category = models.CharField(max_length = 20)
 
 
 class Order(models.Model):
